@@ -73,7 +73,7 @@ public class LinkedListPalindrome {
         int i=1;
         Node f=head,l=last;
 
-        while(i<(size/2)){
+        while(i<=(size/2)){
             //
             //System.out.println("first="+f.data);
             //System.out.println("last="+ l.data);
