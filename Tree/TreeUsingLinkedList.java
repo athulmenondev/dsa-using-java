@@ -80,15 +80,57 @@ public class TreeUsingLinkedList {
                     }
                 }
             }
+            
+            public static int countOfNodes(Node root){
+                if (root==null) {
+                    return 0;
+                }
+                int lt=countOfNodes(root.left);
+                int rt=countOfNodes(root.right);
+                return lt+rt+1;
+            }
+            public static int sumOfNodes(Node root){
+                if (root==null) {
+                    return 0;
+                }
+                int lt=sumOfNodes(root.left);
+                int rt=sumOfNodes(root.right);
+                return lt+rt+root.data;
+            }
+            int h=0;
+            public static int heifhtOfNodes(Node root){
+                if (root==null) {
+                    return 0;
+                }
+                int lh=heifhtOfNodes(root.left);
+                int rh=heifhtOfNodes(root.right);
+                if(lh<=rh){
+                    return rh+1;
+                }else
+                return lh+1;
+            }
+            //O(n^2)
+            public static int diameterOfTree(Node root){
+                if (root==null) {
+                    return 0;
+                }
+                int ld= diameterOfTree(root.left);
+                int rd=diameterOfTree(root.right);
+                return Math.max(Math.max(ld, rd),(ld+rd+1));
+            }
         }
         public static void main(String[] args) {
             int nodes[]={1, 2, 4, -1, -1, 5, -1, -1, 3, -1, 6, -1, -1};
+            //int nodes[]={1, 2, 3, 4, 5, 6, -1, -1, -1, -1, -1, -1, -1};
             Node root=Tree.bulidTree(nodes);
             //Tree.levelOrderTraveral(root);
             //Tree.preOrder(root);
             //Tree.inOrder(root);
-            Tree.postOrder(root);
-
+            //Tree.postOrder(root);
+            //System.err.println("Nodes="+Tree.countOfNodes(root));
+            //System.err.println("Nodes="+Tree.sumOfNodes(root));
+            //System.out.println("Height="+Tree.heifhtOfNodes(root));
+            System.out.println("Diameter="+Tree.diameterOfTree(root));
         }
 
 }
