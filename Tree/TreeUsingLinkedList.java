@@ -3,6 +3,8 @@ package Tree;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import Tree.TreeUsingLinkedList.Tree.detailsOfNodes;
+
 public class TreeUsingLinkedList {
 
     static class  Node{
@@ -118,6 +120,25 @@ public class TreeUsingLinkedList {
                 int rd=diameterOfTree(root.right);
                 return Math.max(Math.max(ld, rd),(ld+rd+1));
             }
+            public static class  detailsOfNodes {
+                int height;
+                int dia;
+                detailsOfNodes(int h,int d){
+                    this.height=h;
+                    this.dia=d;
+                }
+            }
+            public static detailsOfNodes getDetailsOfNodes(Node root){
+                if(root==null){
+                    return new detailsOfNodes(0, 0);
+                }
+                detailsOfNodes l=getDetailsOfNodes(root.left);
+                detailsOfNodes r=getDetailsOfNodes(root.right);
+                int myHeight=Math.max(l.height, r.height)+1;
+                int myDia=Math.max(Math.max(l.height, r.height), l.height+r.height);
+                detailsOfNodes mydetails = new detailsOfNodes(myHeight, myDia);
+                return mydetails;
+            }
         }
         public static void main(String[] args) {
             int nodes[]={1, 2, 4, -1, -1, 5, -1, -1, 3, -1, 6, -1, -1};
@@ -130,7 +151,9 @@ public class TreeUsingLinkedList {
             //System.err.println("Nodes="+Tree.countOfNodes(root));
             //System.err.println("Nodes="+Tree.sumOfNodes(root));
             //System.out.println("Height="+Tree.heifhtOfNodes(root));
-            System.out.println("Diameter="+Tree.diameterOfTree(root));
+            //System.out.println("Diameter="+Tree.diameterOfTree(root));
+            detailsOfNodes details=Tree.getDetailsOfNodes(root);
+            System.out.println("The Dia is "+details.dia+" and Height is "+details.height);
         }
 
 }
