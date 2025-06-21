@@ -1,0 +1,23 @@
+# IntelliJ IDEA specific files and directories
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Compiled output directories
+out/
+bin/
+target/ # Common for Maven/Gradle projects
+build/  # Common for Gradle projects
+
+# JVM specific files
+*.class
+*.jar
+*.war
+*.zip
+*.log
+*.lock
+
+# OS generated files
+.DS_Store # Mac
+Thumbs.db # Windows
