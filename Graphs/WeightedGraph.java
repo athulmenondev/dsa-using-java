@@ -7,11 +7,9 @@ public class WeightedGraph {
     static class Edge {
         int src;
         int dest;
-        int wt;
-        public Edge(int src,int dest,int wt){
+        public Edge(int src,int dest){
             this.src=src;
             this.dest=dest;
-            this.wt=wt;
         }
     }
     public static void createGraph(ArrayList<Edge> graph[]){
@@ -19,22 +17,16 @@ public class WeightedGraph {
             graph[i]=new ArrayList<>();
         }
 
-      graph[0].add(new Edge(0, 1, 1));
-      graph[0].add(new Edge(0, 2, 1));
-      graph[1].add(new Edge(1, 0, 1));
-      graph[1].add(new Edge(1, 3, 1));
-      graph[2].add(new Edge(2, 0, 1));
-      graph[2].add(new Edge(2, 4, 1));
-      graph[3].add(new Edge(3, 1, 1));
-      graph[3].add(new Edge(3, 4, 1));
-      graph[3].add(new Edge(3, 5, 1));
-      graph[4].add(new Edge(4, 2, 1));
-      graph[4].add(new Edge(4, 3, 1));
-      graph[4].add(new Edge(4, 5, 1));
-      graph[5].add(new Edge(5, 3, 1));
-      graph[5].add(new Edge(5, 4, 1));
-      graph[5].add(new Edge(5, 6, 1));
-      graph[5].add(new Edge(6, 5, 1));
+    graph[0].add(new Edge(0, 1));
+    //graph[0].add(new Edge(0, 2));
+    graph[0].add(new Edge(0, 3));
+    // graph[1].add(new Edge(1, 0));
+    graph[1].add(new Edge(1, 2));
+    graph[2].add(new Edge(2, 0));
+    //graph[2].add(new Edge(2, 1));
+    //graph[3].add(new Edge(3, 0));
+    graph[3].add(new Edge(3, 4));
+    //graph[4].add(new Edge(4, 3));
         
     }
     public  static ArrayList<Integer> findNeib(ArrayList<Edge> graph[],int idx){
@@ -84,6 +76,23 @@ public class WeightedGraph {
             }
         }
     }
+    public static boolean isCycle(ArrayList<Edge> graph[],boolean visited[],boolean recursiostack[],int curr){
+        visited[curr]=true;
+        recursiostack[curr]=true;
+        for (int i = 0; i < graph[curr].size(); i++) {
+            Edge e= graph[curr].get(i);
+            if(recursiostack[e.dest]){
+                return true;
+            }
+            else if(!visited[e.dest]){
+                if(isCycle(graph, visited, recursiostack, e.dest)){
+                    return true;
+                }
+            }
+        }
+        recursiostack[curr]=false;
+        return false;
+    }
     public static void main(String[] args) {
          int v=7;
         ArrayList<Edge> graph[]= new ArrayList[v];
@@ -102,7 +111,10 @@ public class WeightedGraph {
         //        dfs(graph,visited,i);;
         //     }
         // }
-        findAllPaths(graph, visited, "0", 0, 5);
         
+        //findallpaths
+        //findAllPaths(graph, visited, "0", 0, 5);
+        
+        System.out.println(isCycle(graph, visited, new boolean[v],0));
     }
 }

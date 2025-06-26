@@ -36,6 +36,9 @@ public class Graph {
         }
         return l;
     }
+    public static boolean isCyclic(){
+        
+    }
     public static void main(String[] args) {
         int v=4;
         @SuppressWarnings("unchecked")
