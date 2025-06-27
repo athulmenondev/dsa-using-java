@@ -1,15 +1,20 @@
 package Graphs;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Stack;
+
 
 public class WeightedGraph {
     static class Edge {
         int src;
         int dest;
-        public Edge(int src,int dest){
+        int wt;
+        public Edge(int src,int dest,int wt){
             this.src=src;
             this.dest=dest;
+            this.wt=wt;
         }
     }
     public static void createGraph(ArrayList<Edge> graph[]){
@@ -17,17 +22,19 @@ public class WeightedGraph {
             graph[i]=new ArrayList<>();
         }
 
-    graph[0].add(new Edge(0, 1));
-    //graph[0].add(new Edge(0, 2));
-    graph[0].add(new Edge(0, 3));
-    // graph[1].add(new Edge(1, 0));
-    graph[1].add(new Edge(1, 2));
-    graph[2].add(new Edge(2, 0));
-    //graph[2].add(new Edge(2, 1));
-    //graph[3].add(new Edge(3, 0));
-    graph[3].add(new Edge(3, 4));
-    //graph[4].add(new Edge(4, 3));
-        
+        graph[0].add(new Edge(0,1,2 ));
+        graph[0].add(new Edge(0, 2, 4));
+
+        graph[1].add(new Edge(1, 2,1 ));
+        graph[1].add(new Edge(1, 3, 7));
+
+        graph[2].add(new Edge(2, 4,3 ));
+
+        graph[3].add(new Edge(3, 5,1 ));
+
+        graph[4].add(new Edge(4, 3,2 ));
+        graph[4].add(new Edge(4, 5,5 ));
+
     }
     public  static ArrayList<Integer> findNeib(ArrayList<Edge> graph[],int idx){
         ArrayList<Integer> l=new ArrayList<>();
@@ -76,7 +83,7 @@ public class WeightedGraph {
             }
         }
     }
-    public static boolean isCycle(ArrayList<Edge> graph[],boolean visited[],boolean recursiostack[],int curr){
+    public static boolean isCycleDirected(ArrayList<Edge> graph[],boolean visited[],boolean recursiostack[],int curr){
         visited[curr]=true;
         recursiostack[curr]=true;
         for (int i = 0; i < graph[curr].size(); i++) {
@@ -85,7 +92,7 @@ public class WeightedGraph {
                 return true;
             }
             else if(!visited[e.dest]){
-                if(isCycle(graph, visited, recursiostack, e.dest)){
+                if(isCycleDirected(graph, visited, recursiostack, e.dest)){
                     return true;
                 }
             }
@@ -93,8 +100,70 @@ public class WeightedGraph {
         recursiostack[curr]=false;
         return false;
     }
+
+    //topological order
+    public static void  topologicalOrder(ArrayList<Edge> graph[],boolean visited[],Stack<Integer> st,int curr){
+        System.out.println("Entered function for "+ curr);
+        visited[curr]=true;
+        for (int index = 0; index < graph[curr].size(); index++) {
+            Edge e= graph[curr].get(index);
+            if(!visited[e.dest]){
+                topologicalOrder(graph, visited, st, e.dest);
+            }
+        }
+        System.out.println("pushing to stack "+ curr);
+        st.push(curr);
+    }
+
+    //dijiksthras
+    public static class Pair implements Comparable<Pair>{
+        int v;
+        int dist;
+        public Pair(int v, int dist){
+            this.dist=dist;
+            this.v=v;
+        }
+        @Override
+        public int compareTo(Pair p2){
+            return this.dist=dist;
+        }
+    }
+    static PriorityQueue<Pair> q= new PriorityQueue<>();
+
+    public static void dijksthras(ArrayList<Edge> graph[],int source,int v){
+        boolean visited[] = new boolean[v];
+        int dist[]= new int[v];
+        for (int i = 0; i < dist.length; i++) {
+            if (i==source) {
+                dist[i]=0;
+                continue;
+            }
+            dist[i]=Integer.MAX_VALUE;
+        }
+        q.add(new Pair(source, 0));
+        Pair p;
+        while (!q.isEmpty()) {
+            p=q.remove();
+            for (int i = 0; i < graph[p.v].size(); i++) {
+                Edge e= graph[p.v].get(i);
+                if (!visited[e.dest]) {
+                    if(dist[p.v]+e.wt<dist[e.dest]){
+                        dist[e.dest]=dist[p.v]+e.wt;
+                    }
+                    q.add(new Pair(e.dest, dist[e.dest]));
+                }
+            }
+
+        }
+        for (int i = 0; i < dist.length; i++) {
+            System.out.println(dist[i]);
+        }
+    }
+
+    
+
     public static void main(String[] args) {
-         int v=7;
+         int v=6;
         ArrayList<Edge> graph[]= new ArrayList[v];
         createGraph(graph);
         boolean[] visited=new boolean[graph.length];
@@ -115,6 +184,27 @@ public class WeightedGraph {
         //findallpaths
         //findAllPaths(graph, visited, "0", 0, 5);
         
-        System.out.println(isCycle(graph, visited, new boolean[v],0));
+        //CycleExistsDirected
+        // for (int i = 0; i < v; i++) {
+            // if(isCycleDirected(graph, visited, new boolean[v],0)){
+        //         System.out.println(true);
+        //         break;
+        //     }
+        // }
+
+        //topological sort
+        // Stack<Integer> st=new Stack<>();
+        // for (int i = 0; i < v; i++) {
+        //     System.out.println("calling function for "+i);
+        //     if(!visited[i]){
+        //         topologicalOrder(graph, visited, st, i);
+        //     }
+        // }
+        // for (int index = 0; index < v; index++) {
+        //     System.out.println(st.pop());
+        // }
+
+        //dijiksthras
+        dijksthras(graph, 0, v);
     }
 }
