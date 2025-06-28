@@ -30,11 +30,11 @@ public class WeightedGraph {
 
         graph[2].add(new Edge(2, 4,3 ));
 
-        graph[3].add(new Edge(3, 5,1 ));
+        graph[3].add(new Edge(3, 5,11 ));
 
-        graph[4].add(new Edge(4, 3,2 ));
         graph[4].add(new Edge(4, 5,5 ));
 
+        //graph[5].add(new Edge(5, 4,4 ));
     }
     public  static ArrayList<Integer> findNeib(ArrayList<Edge> graph[],int idx){
         ArrayList<Integer> l=new ArrayList<>();
@@ -103,7 +103,6 @@ public class WeightedGraph {
 
     //topological order
     public static void  topologicalOrder(ArrayList<Edge> graph[],boolean visited[],Stack<Integer> st,int curr){
-        System.out.println("Entered function for "+ curr);
         visited[curr]=true;
         for (int index = 0; index < graph[curr].size(); index++) {
             Edge e= graph[curr].get(index);
@@ -111,7 +110,6 @@ public class WeightedGraph {
                 topologicalOrder(graph, visited, st, e.dest);
             }
         }
-        System.out.println("pushing to stack "+ curr);
         st.push(curr);
     }
 
@@ -160,7 +158,81 @@ public class WeightedGraph {
         }
     }
 
-    
+    //bellman
+    public static void bellman(ArrayList<Edge> graph[],int source,int v){
+        int dist[]= new int[v];
+        
+        for (int i = 0; i < dist.length; i++) {
+            if(i==source){
+                dist[i]=0;
+            }else{
+                dist[i]=Integer.MAX_VALUE;
+            }
+        }
+
+        for (int k = 0; k < v-1; k++) {
+            for (int i = 0; i < v; i++) {
+                for (int j = 0; j < graph[i].size(); j++) {
+                    Edge e= graph[i].get(j);
+                    if(dist[e.src] != Integer.MAX_VALUE && dist[e.src]+e.wt< dist[e.dest]){
+                        dist[e.dest]=dist[e.src]+e.wt;
+                    }
+                }
+            }
+        }
+        //to detect -ve wt cycles
+        for (int i = 0; i < v-1; i++) {
+            for (int j = 0; j < graph[i].size(); j++) {
+                Edge e= graph[i].get(j);
+                if(dist[e.src] != Integer.MAX_VALUE && dist[e.src]+e.wt< dist[e.dest]){
+                    System.out.println("-ve Cycle detected");
+                    return;
+                }
+            }
+        }
+
+        for (int i:dist) {
+            System.out.println(i);
+        }
+    }
+
+    //primsAlgo
+    public static class Paircost implements Comparable<Paircost> {
+        int node;
+        int cost;
+        public Paircost(int node,int cost){
+            this.cost=cost;
+            this.node=node;
+        }
+        @Override
+        public int compareTo(Paircost p2){
+            return this.cost-p2.cost;
+        }
+    }
+    public static void primsAlgo(ArrayList<Edge> graph[],int v){
+        PriorityQueue<Paircost> pq= new PriorityQueue<>();
+        boolean visited[]= new boolean[v];
+        int totalcost=0;
+
+        pq.add(new Paircost(0,0));
+        while (!pq.isEmpty()) {
+            Paircost pc= pq.remove();
+            if(!visited[pc.node]){
+                visited[pc.node]=true;
+                System.out.println("adding "+pc.cost);
+                totalcost+=pc.cost;
+                for (int i = 0; i < graph[pc.node].size(); i++) {
+                    Edge e= graph[pc.node].get(i);
+                    if(!visited[e.dest]){
+                        pq.add(new Paircost(e.dest, e.wt));
+                        System.out.println("adding the par Node= "+e.dest+" wt= "+e.wt);
+                    }
+                }
+            }
+        }
+        System.out.println(totalcost);
+    }
+
 
     public static void main(String[] args) {
          int v=6;
@@ -205,6 +277,10 @@ public class WeightedGraph {
         // }
 
         //dijiksthras
-        dijksthras(graph, 0, v);
+        //dijksthras(graph, 0, v);
+        
+        //bellman
+        // bellman(graph, 0, v);
+        primsAlgo(graph, v);
     }
 }
